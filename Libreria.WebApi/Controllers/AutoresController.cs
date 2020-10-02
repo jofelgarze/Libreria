@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Libreria.Datos;
 using Libreria.Datos.Entidades;
+using Libreria.Negocio.Base;
+using Libreria.WebApi.Models;
 
 namespace Libreria.WebApi.Controllers
 {
@@ -14,25 +16,25 @@ namespace Libreria.WebApi.Controllers
     [ApiController]
     public class AutoresController : ControllerBase
     {
-        private readonly LibreriaDbContext _context;
-
-        public AutoresController(LibreriaDbContext context)
+        private readonly IAutorRepository _repository;
+        public AutoresController(IAutorRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/Autores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Autor>>> GetAutores()
         {
-            return await _context.Autores.ToListAsync();
+            var result = await _repository.GetAllAsync();
+            return result.ToList();
         }
 
         // GET: api/Autores/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Autor>> GetAutor(int id)
         {
-            var autor = await _context.Autores.FindAsync(id);
+            var autor = await _repository.GetByIdAsync(id);
 
             if (autor == null)
             {
@@ -45,20 +47,27 @@ namespace Libreria.WebApi.Controllers
         // GET: api/Autores/5/Libros
         [HttpGet("{id}/Libros")]
         public async Task<ActionResult<List<Libro>>> GetLibrosPorAutor(int id)
-        {
-            var libros = await _context.Libros.Include("Autor").Where(a => a.Autor.Id == id).ToListAsync();
-            
-            return libros;
+        {           
+            return new List<Libro>();
         }
 
         // POST: api/Autores
         [HttpPost]
-        public async Task<ActionResult<Autor>> PostAutor(Autor autor)
+        public async Task<ActionResult<Autor>> PostAutor(AutorVM modelo)
         {
-            _context.Autores.Add(autor);
-            await _context.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                var autor = new Autor
+                {
+                    Nombre = modelo.Nombre,
+                    FechaRegistro = modelo.FechaRegistro.Value
+                }; 
 
-            return CreatedAtAction("GetAutor", new { id = autor.Id }, autor);
+                await _repository.AddAsync(autor);
+
+                return CreatedAtAction("GetAutor", new { id = autor.Id }, autor);
+            }
+            return ValidationProblem(ModelState);
         }
 
         // PUT: api/Autores/5
@@ -70,15 +79,13 @@ namespace Libreria.WebApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(autor).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.UpdateAsync(autor);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AutorExists(id))
+                if (!await _repository.ExistsById(id))
                 {
                     return NotFound();
                 }
@@ -96,21 +103,16 @@ namespace Libreria.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Autor>> DeleteAutor(int id)
         {
-            var autor = await _context.Autores.FindAsync(id);
+            var autor = await _repository.GetByIdAsync(id);
             if (autor == null)
             {
                 return NotFound();
             }
 
-            _context.Autores.Remove(autor);
-            await _context.SaveChangesAsync();
+            await _repository.DeleteteAsync(autor);
 
             return autor;
         }
 
-        private bool AutorExists(int id)
-        {
-            return _context.Autores.Any(e => e.Id == id);
-        }
     }
 }

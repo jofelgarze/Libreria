@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Libreria.Negocio;
+using Libreria.Negocio.Base;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 namespace Libreria.WebApi
 {
@@ -26,8 +29,21 @@ namespace Libreria.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            //Configuracion de Contextos de Base de Datos
             services.AddDbContext<Libreria.Datos.LibreriaDbContext>(config => {
                 config.UseInMemoryDatabase("DbMemory");
+            });
+
+            //Configuracion de Injeccion de Dependencias
+            services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+            services.AddScoped(typeof(IAutorRepository), typeof(AutorRepository));
+            
+            services.AddTransient<IAutorRepository, AutorRepository>();
+            //FIN -- Configuracion ID
+
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Autores API", Version = "v1"});
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -48,6 +64,11 @@ namespace Libreria.WebApi
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Autores API v1");
+            });
         }
     }
 }
