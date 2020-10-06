@@ -9,6 +9,7 @@ using Libreria.Datos;
 using Libreria.Datos.Entidades;
 using Libreria.Negocio.Base;
 using Libreria.WebApi.Models;
+using Libreria.WebApi.Filters;
 
 namespace Libreria.WebApi.Controllers
 {
@@ -17,9 +18,12 @@ namespace Libreria.WebApi.Controllers
     public class AutoresController : ControllerBase
     {
         private readonly IAutorRepository _repository;
-        public AutoresController(IAutorRepository repository)
+        private readonly ILibroRepository _repositoryLibro;
+
+        public AutoresController(IAutorRepository repository, ILibroRepository repositoryLibro)
         {
             _repository = repository;
+            _repositoryLibro = repositoryLibro;
         }
 
         // GET: api/Autores
@@ -44,12 +48,6 @@ namespace Libreria.WebApi.Controllers
             return autor;
         }
 
-        // GET: api/Autores/5/Libros
-        [HttpGet("{id}/Libros")]
-        public async Task<ActionResult<List<Libro>>> GetLibrosPorAutor(int id)
-        {           
-            return new List<Libro>();
-        }
 
         // POST: api/Autores
         [HttpPost]
@@ -72,30 +70,40 @@ namespace Libreria.WebApi.Controllers
 
         // PUT: api/Autores/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAutor(int id, Autor autor)
+        public async Task<IActionResult> PutAutor(int id, AutorVM modelo)
         {
-            if (id != autor.Id)
+            if (id != modelo.Id)
             {
                 return BadRequest();
             }
 
-            try
+            if (ModelState.IsValid)
             {
-                await _repository.UpdateAsync(autor);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _repository.ExistsById(id))
+                try
                 {
-                    return NotFound();
+                    var autor = new Autor
+                    {
+                        Id = modelo.Id,
+                        Nombre = modelo.Nombre,
+                        FechaRegistro = modelo.FechaRegistro.Value
+                    };
+                    await _repository.UpdateAsync(autor);
+                    return NoContent();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!await _repository.ExistsById(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
 
-            return NoContent();
+            return ValidationProblem(ModelState);
         }
 
        
@@ -114,5 +122,64 @@ namespace Libreria.WebApi.Controllers
             return autor;
         }
 
+        // GET: api/Autores/5/Libros
+        [HttpGet("{id}/Libros")]
+        public async Task<ActionResult<List<LibroVM>>> GetLibrosPorAutor(int id)
+        {
+            var autor = await _repository.GetLibrosPorAutorId(id);
+            if (autor != null)
+            {
+                if (autor.Libros.Count > 0)
+                {
+                    return Ok(autor.Libros.Select(l => new LibroVM() { 
+                        Id = l.Id,
+                        Precio = l.Precio,
+                        Publicado = l.Publicado,
+                        Titulo = l.Titulo,
+                        Autor = new AutorLibroVM() { 
+                            Nombre = l.Autor.Nombre,
+                            Id = l.Autor.Id
+                        }
+                    }).ToList());
+                }
+                return NoContent();
+            }
+            return NotFound();
+        }
+
+        [EncriptacionResultFilter]
+        // POST: api/Autores/5/Libros
+        [HttpPost("{id}/Libros")]
+        public async Task<ActionResult<LibroVM>> PostAutor(int id, LibroVM modelo)
+        {
+            if (modelo.Autor == null || id != modelo.Autor.Id)
+            {
+                return BadRequest();
+            }
+
+            var autor = await _repository.GetByIdAsync(id);
+
+            if (autor == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                
+                var libro = new Libro() { 
+                    Titulo = modelo.Titulo,
+                    Precio = modelo.Precio,
+                    Publicado = modelo.Publicado,
+                    Autor = autor
+                };
+
+                await _repositoryLibro.AddAsync(libro);
+
+                modelo.Id = libro.Id;
+                return CreatedAtAction("GetLibrosPorAutor", new { id = autor.Id }, modelo);
+            }
+            return ValidationProblem(ModelState);
+        }
     }
 }

@@ -21,5 +21,11 @@ namespace Libreria.Negocio
             return await _context.Autores.Include("Libros")
                 .Where(a => a.Libros.Any(l => !l.Publicado)).ToListAsync();
         }
+
+        public async Task<Autor> GetLibrosPorAutorId(int id)
+        {
+            return await _context.Autores.Include("Libros")
+                .Where(a => a.Id == id).FirstOrDefaultAsync();
+        }
     }
 }

@@ -9,5 +9,7 @@ namespace Libreria.Negocio.Base
     public interface IAutorRepository : IRepository<Autor, Int32>
     {
         Task<IEnumerable<Autor>> GetAutoresConPublicacionPendiente();
+
+        Task<Autor> GetLibrosPorAutorId(int id);
     }
 }

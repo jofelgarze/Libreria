@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Libreria.Datos.Entidades
 {
-    public class Libro
+    public class Libro : AbsEntity<int>
     {
-        public int Id { get; set; }
         public string Titulo { get; set; }
         public Autor Autor { get; set; }
         public bool Publicado { get; set; }

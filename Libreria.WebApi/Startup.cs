@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Libreria.Negocio;
 using Libreria.Negocio.Base;
+using Libreria.WebApi.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -38,15 +39,21 @@ namespace Libreria.WebApi
             //Configuracion de Injeccion de Dependencias
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             services.AddScoped(typeof(IAutorRepository), typeof(AutorRepository));
-            
+            services.AddScoped(typeof(ILibroRepository), typeof(LibroRepository));
+
             services.AddTransient<IAutorRepository, AutorRepository>();
+            services.AddTransient<ILibroRepository, LibroRepository>();
             //FIN -- Configuracion ID
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Autores API", Version = "v1"});
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(RegistroLogAuditoriaFilter)); //Agregando filtros de accion de forma GLOBAL
+
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
