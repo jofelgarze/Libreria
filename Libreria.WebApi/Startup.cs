@@ -33,8 +33,9 @@ namespace Libreria.WebApi
 
             //Configuracion de Contextos de Base de Datos
             services.AddDbContext<Libreria.Datos.LibreriaDbContext>(config => {
-                config.UseInMemoryDatabase("DbMemory");
-            });
+                config.UseSqlServer(Configuration.GetConnectionString("LibreriaDb"), b => b.MigrationsAssembly("Libreria.Datos"));
+                //config.UseInMemoryDatabase("DbMemory");
+            }, ServiceLifetime.Singleton);
 
             //Configuracion de Injeccion de Dependencias
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
@@ -53,7 +54,8 @@ namespace Libreria.WebApi
             {
                 options.Filters.Add(typeof(RegistroLogAuditoriaFilter)); //Agregando filtros de accion de forma GLOBAL
 
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            });
+                //.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
