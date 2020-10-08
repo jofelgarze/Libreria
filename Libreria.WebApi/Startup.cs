@@ -33,7 +33,8 @@ namespace Libreria.WebApi
 
             //Configuracion de Contextos de Base de Datos
             services.AddDbContext<Libreria.Datos.LibreriaDbContext>(config => {
-                config.UseSqlServer(Configuration.GetConnectionString("LibreriaDb"), b => b.MigrationsAssembly("Libreria.Datos"));
+                config.UseSqlServer(Configuration.GetConnectionString("LibreriaDb"), 
+                    options => options.MigrationsAssembly("Libreria.Datos"));
                 //config.UseInMemoryDatabase("DbMemory");
             }, ServiceLifetime.Singleton);
 

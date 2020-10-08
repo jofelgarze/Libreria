@@ -4,14 +4,16 @@ using Libreria.Datos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Libreria.Datos.Migrations
 {
     [DbContext(typeof(LibreriaDbContext))]
-    partial class LibreriaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201008011939_TblAlterAutores")]
+    partial class TblAlterAutores
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
