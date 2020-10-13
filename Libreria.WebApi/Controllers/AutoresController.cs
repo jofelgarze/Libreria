@@ -10,6 +10,7 @@ using Libreria.Datos.Entidades;
 using Libreria.Negocio.Base;
 using Libreria.WebApi.Models;
 using Libreria.WebApi.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Libreria.WebApi.Controllers
 {
@@ -35,6 +36,7 @@ namespace Libreria.WebApi.Controllers
         }
 
         // GET: api/Autores/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Autor>> GetAutor(int id)
         {

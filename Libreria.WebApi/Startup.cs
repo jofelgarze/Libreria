@@ -30,6 +30,14 @@ namespace Libreria.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", config => {
+                    config.Authority = "https://localhost:4001";
+                    config.Audience = "Audiencia";
+                    config.RequireHttpsMetadata = true;
+                });
+
 
             //Configuracion de Contextos de Base de Datos
             services.AddDbContext<Libreria.Datos.LibreriaDbContext>(config => {
@@ -73,6 +81,9 @@ namespace Libreria.WebApi
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
+
             app.UseMvc();
 
             app.UseSwagger();
