@@ -52,8 +52,20 @@ namespace Libreria.SeguridadApi
                 .AddJwtBearer(config => {
                     var claveBytes = Encoding.UTF8.GetBytes(JwtConfig.Clave);
                     var llave = new SymmetricSecurityKey(claveBytes);
+                    
+                    
 
-                    config.Events = new JwtBearerEvents() {
+                    config.RequireHttpsMetadata = false;
+                    config.SaveToken = true;
+                    config.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = JwtConfig.Emisor,
+                        ValidAudience = JwtConfig.Audiencia,
+                        IssuerSigningKey = llave,
+                    };
+
+                    config.Events = new JwtBearerEvents()
+                    {
 
                         OnMessageReceived = context => {
                             if (context.Request.Query.ContainsKey("access_token"))
@@ -63,15 +75,6 @@ namespace Libreria.SeguridadApi
                             return Task.CompletedTask;
                         }
                     };
-
-                    config.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = JwtConfig.Emisor,
-                        ValidAudience = JwtConfig.Audiencia,
-                        IssuerSigningKey = llave
-                    };
-
-
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -89,6 +92,12 @@ namespace Libreria.SeguridadApi
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 

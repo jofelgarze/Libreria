@@ -16,6 +16,7 @@ namespace Libreria.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AutoresController : ControllerBase
     {
         private readonly IAutorRepository _repository;
@@ -29,6 +30,7 @@ namespace Libreria.WebApi.Controllers
 
         // GET: api/Autores
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Autor>>> GetAutores()
         {
             var result = await _repository.GetAllAsync();
@@ -36,7 +38,6 @@ namespace Libreria.WebApi.Controllers
         }
 
         // GET: api/Autores/5
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Autor>> GetAutor(int id)
         {

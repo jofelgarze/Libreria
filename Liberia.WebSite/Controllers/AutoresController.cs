@@ -6,21 +6,38 @@ using Liberia.WebSite.Models;
 using Liberia.WebSite.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Liberia.WebSite.Controllers
 {
     public class AutoresController : Controller
     {
         private readonly IWebApiService _apiService;
+        private readonly ISeguridadApiService _seguridadService;
+        private readonly ILogger _logger;
 
-        public AutoresController(IWebApiService apiService)
+        public AutoresController(IWebApiService apiService, ISeguridadApiService seguridadService, ILoggerFactory loggerFactory)
         {
+            _logger = loggerFactory.CreateLogger<AutoresController>();
             _apiService = apiService;
+            _seguridadService = seguridadService;
         }
 
         // GET: Autores
         public async Task<ActionResult> Index()
         {
+            try
+            {
+                var result = await _seguridadService.Registrar(new RegistroVm { Usuario = "jgarciaz", Password = "123456", ConfirmarPassword = "123456" });
+                _logger.LogInformation("El token de seguridad es: " + result.access_token);
+                var result2 = await _seguridadService.UserInfor(result.access_token);
+                _logger.LogInformation("El usuario autenticado es: " + result2);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+
             var autores = await _apiService.GetAutoresAsync();
             return View(autores);
         }

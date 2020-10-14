@@ -29,6 +29,7 @@ namespace Liberia.WebSite
 
             //services.AddScoped(typeof(IAutorRepository), typeof(AutorRepository));
             services.AddTransient<IWebApiService, WebApiService>();
+            services.AddTransient<ISeguridadApiService, SeguridadApiService>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
