@@ -9,11 +9,11 @@ namespace Liberia.WebSite.Services
     public interface IWebApiService : IDisposable
     {
 
-        Task<List<Autor>> GetAutoresAsync();
+        Task<List<Autor>> GetAutoresAsync(string token);
 
         Task<Autor> GetAutorAsync(int id);
 
-        Task<Autor> CreateAutorAsync(Autor model);
+        Task<Autor> CreateAutorAsync(string token, Autor model);
 
         Task UpdateAutorAsync(Autor model);
 

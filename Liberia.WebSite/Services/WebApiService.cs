@@ -18,8 +18,9 @@ namespace Liberia.WebSite.Services
             _httpClient.BaseAddress = new Uri(urlBase);
         }
 
-        public async Task<List<Autor>> GetAutoresAsync()
+        public async Task<List<Autor>> GetAutoresAsync(string token)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var respuesta = await _httpClient.GetAsync($"/api/Autores");
             var contenido = await respuesta.Content.ReadAsStringAsync();
 
@@ -34,8 +35,9 @@ namespace Liberia.WebSite.Services
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Autor>(contenido);
         }
         
-        public async Task<Autor> CreateAutorAsync(Autor model)
+        public async Task<Autor> CreateAutorAsync(string token, Autor model)
         {
+             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var body = new StringContent(
                     Newtonsoft.Json.JsonConvert.SerializeObject(model),
                     System.Text.Encoding.UTF8,

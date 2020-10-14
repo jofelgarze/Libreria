@@ -30,7 +30,6 @@ namespace Libreria.WebApi.Controllers
 
         // GET: api/Autores
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Autor>>> GetAutores()
         {
             var result = await _repository.GetAllAsync();
@@ -39,6 +38,7 @@ namespace Libreria.WebApi.Controllers
 
         // GET: api/Autores/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Autor>> GetAutor(int id)
         {
             var autor = await _repository.GetByIdAsync(id);

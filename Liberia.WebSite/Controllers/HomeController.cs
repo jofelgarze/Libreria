@@ -45,9 +45,6 @@ namespace Liberia.WebSite.Controllers
 
         public async Task<IActionResult> Privacy()
         {
-
-            ViewBag.Datos = await _apiService.GetAutoresAsync();
-
             return View();
         }
 
