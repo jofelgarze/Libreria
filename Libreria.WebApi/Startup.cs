@@ -133,6 +133,12 @@ namespace Libreria.WebApi
                 app.UseHsts();
             }
 
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
