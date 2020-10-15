@@ -16,3 +16,12 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
+li.nav-item.link-active {
+  background-color: #1b6ec2;
+  
+}
+
+li.nav-item.link-active .nav-link.text-dark {
+  color: white !important;
+}
