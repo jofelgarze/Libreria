@@ -14,7 +14,7 @@ namespace Liberia.WebSite.Services
         public WebApiService(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient() ?? throw new ArgumentNullException(nameof(httpClientFactory));
-            var urlBase = "https://localhost:5001";
+            var urlBase = "https://localhost:5011";
             _httpClient.BaseAddress = new Uri(urlBase);
         }
 
