@@ -26,11 +26,11 @@ namespace Liberia.WebSite.Controllers
         public async Task<IActionResult> Index()
         {
             //Modelo automatizado
-            //var cliente = new webapiClient("https://localhost:5001", _httpClientFactory.CreateClient());
+            //var cliente = new webapiClient("https://localhost:5011", _httpClientFactory.CreateClient());
             //var result = await cliente.AutoresAllAsync();
 
             //Metodo manual
-            var urlBase = "https://localhost:5001";
+            var urlBase = "https://localhost:5011";
             var clienteHttp = _httpClientFactory.CreateClient();
 
             clienteHttp.BaseAddress = new Uri(urlBase);
