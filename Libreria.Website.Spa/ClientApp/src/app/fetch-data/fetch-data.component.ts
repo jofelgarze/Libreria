@@ -1,23 +1,31 @@
 import { Component, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-fetch-data',
   templateUrl: './fetch-data.component.html'
 })
 export class FetchDataComponent {
-  public forecasts: WeatherForecast[];
+  public autores: Autor[];
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<WeatherForecast[]>(baseUrl + 'weatherforecast').subscribe(result => {
-      this.forecasts = result;
+  constructor(http: HttpClient, @Inject('BASE_URL_WEBAPI') baseUrl: string) {
+
+    let headersReq = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+    });
+
+    http.get<Autor[]>(baseUrl + 'api/autores', { headers: headersReq} ).subscribe(result => {
+      console.log(result);
+      this.autores = result;
     }, error => console.error(error));
   }
 }
 
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
+interface Autor {
+  id: number;
+  nombre: string;
+  fechaRegistro: number;
+  libros: [];
+  activo: boolean;
 }

@@ -8,8 +8,19 @@ export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
 }
 
+export function getWebApiUrl() {
+  return 'https://localhost:5001/';
+}
+
+
+export function getSeguridadApiUrl() {
+  return 'https://localhost:4001/';
+}
+
 const providers = [
-  { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] }
+  { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] },
+  { provide: 'BASE_URL_WEBAPI', useFactory: getWebApiUrl, deps: [] },
+  { provide: 'BASE_URL_SEGURIDADAPI', useFactory: getSeguridadApiUrl, deps: [] }
 ];
 
 if (environment.production) {
