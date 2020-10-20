@@ -31,7 +31,6 @@ export class RegistroComponent implements OnInit {
         sessionStorage.setItem('token', result.access_token);
         this.router.navigate(['/home']);
       }, error => console.error(error));
-
   }
 
 }

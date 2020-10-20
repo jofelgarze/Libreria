@@ -4,21 +4,71 @@
 
 <p *ngIf="!autores"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="autores">
-  <thead>
-    <tr>
-      <th>Codigo</th>
-      <th>Nombre</th>
-      <th>Fecha</th>
-      <th>Activo</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let autor of autores">
-      <td>{{ autor.id }}</td>
-      <td>{{ autor.nombre }}</td>
-      <td>{{ autor.fechaRegistro }}</td>
-      <td>{{ autor.activo }}</td>
-    </tr>
-  </tbody>
-</table>
+
+<div class="row">
+  <div class="col-md-5">
+    <form [formGroup]="formularioAutor" (ngSubmit)="onSubmit()">
+      <input type="hidden" formControlName="id" />
+      <div class="form-group row">
+        <label for="nombre" class="col-sm-5 col-form-label">Nombre</label>
+        <div class="col-sm-7">
+          <input type="text" class="form-control" formControlName="nombre" autocomplete="off" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="fechaRegistro" class="col-sm-5 col-form-label">F. Inicio</label>
+        <div class="col-sm-7">
+          <input type="date" class="form-control" formControlName="fechaRegistro" required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="activo" class="col-sm-5 col-form-label">Estado</label>
+        <div class="col-sm-7">
+          <input class=""
+                 type="checkbox"
+                 formControlName="activo"
+                 [checked]="activo">
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary"
+              [disabled]="!formularioAutor.valid">
+        Guardar
+      </button>
+      <button type="reset" class="btn btn-secondary">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-danger"
+              (click)="eliminarAutor()"
+              [disabled]="!formularioAutor.valid">
+        Eliminar
+      </button>
+    </form>
+  </div>
+  <div class="col-md-7">
+    <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="autores">
+      <thead>
+        <tr>
+          <th>Codigo</th>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Activo</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let autor of autores">
+          <td>{{ autor.id }}</td>
+          <td>{{ autor.nombre }}</td>
+          <td>{{ autor.fechaRegistro | date: 'yyyy-MM-dd' }}</td>
+          <td><input type="checkbox" [checked]="autor.activo" disabled/></td>
+          <td>
+            <button type="button" class="btn btn-xs btn-info" (click)="seleccionarAutor(autor)">Seleccionar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+

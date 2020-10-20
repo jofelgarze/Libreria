@@ -61,7 +61,8 @@ namespace Libreria.WebApi.Controllers
                 var autor = new Autor
                 {
                     Nombre = modelo.Nombre,
-                    FechaRegistro = modelo.FechaRegistro.Value
+                    FechaRegistro = modelo.FechaRegistro.Value,
+                    Activo =  modelo.Activo
                 }; 
 
                 await _repository.AddAsync(autor);
@@ -84,12 +85,12 @@ namespace Libreria.WebApi.Controllers
             {
                 try
                 {
-                    var autor = new Autor
-                    {
-                        Id = modelo.Id,
-                        Nombre = modelo.Nombre,
-                        FechaRegistro = modelo.FechaRegistro.Value
-                    };
+                    var autor = await _repository.GetByIdAsync(id);
+
+                    autor.Nombre = modelo.Nombre;
+                    autor.FechaRegistro = modelo.FechaRegistro.Value;
+                    autor.Activo = modelo.Activo;
+                    
                     await _repository.UpdateAsync(autor);
                     return NoContent();
                 }
@@ -114,10 +115,28 @@ namespace Libreria.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Autor>> DeleteAutor(int id)
         {
-            var autor = await _repository.GetByIdAsync(id);
+            var autor = await _repository.GetLibrosPorAutorId(id);
             if (autor == null)
             {
                 return NotFound();
+            }
+
+            if (autor.Libros.Any())
+            {
+                Parallel.ForEach(autor.Libros, 
+                    async l => await _repositoryLibro.DeleteteAsync(l));
+                //5 seg
+                //7 seg
+                //7 seg tiempo final
+
+                /*
+                foreach (var libro in autor.Libros) {
+                    await _repositoryLibro.DeleteteAsync(libro);
+                    //5 seg
+                    //7 seg
+                    //12 seg tiempo final
+                }
+                */
             }
 
             await _repository.DeleteteAsync(autor);
