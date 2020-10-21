@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Liberia.WebSite.Models;
-using Libreria.WebApi;
 using System.Net.Http;
 using Liberia.WebSite.Services;
 
