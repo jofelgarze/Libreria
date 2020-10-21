@@ -13,6 +13,7 @@
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>F. Registro</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +23,10 @@
                         <td>@autor.Id</td>
                         <td>@autor.Nombre</td>
                         <td>@autor.FechaRegistro</td>
+                        <td>
+                            @Html.ActionLink("Editar", "Edit", new { id = autor.Id }) |
+                            @Html.ActionLink("Eliminar", "Delete", new { id = autor.Id }) 
+                        </td>
                     </tr>
                 }
             </tbody>

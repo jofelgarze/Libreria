@@ -90,48 +90,80 @@ namespace Liberia.WebSite.Controllers
         }
 
         // GET: Autores/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            if (id <= 0)
+            {
+                return BadRequest("Datos invalidos");
+            }
+
+            var model = await _apiService.GetAutorAsync(id);
+
+            return View(model);
         }
 
         // POST: Autores/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, Autor model)
         {
-            try
+            if (id != model.Id)
             {
-                // TODO: Add update logic here
+                return BadRequest("Datos invalidos");
+            }
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            //Se puede estar guardado en una variable de sesion para poder reutilizarlo
+            var token = HttpContext.Session.GetString("token");
+
+            if (ModelState.IsValid)
             {
-                return View();
+                try
+                {
+                    await _apiService.UpdateAutorAsync(token, model);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    ModelState.AddModelError("Id", "No se pudo guardar el registro.");
+                    
+                }
             }
+            return View(model);
         }
 
         // GET: Autores/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            if (id <= 0)
+            {
+                return BadRequest("Datos invalidos");
+            }
+
+            var model = await _apiService.GetAutorAsync(id);
+
+            return View(model);
         }
 
         // POST: Autores/Delete/5
-        [HttpPost]
+        [HttpPost("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
+
+            //Se puede estar guardado en una variable de sesion para poder reutilizarlo
+            var token = HttpContext.Session.GetString("token");
             try
             {
-                // TODO: Add delete logic here
+                await _apiService.DeleteAutorAsync(token, id);
 
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                var model = await _apiService.GetAutorAsync(id);
+
+                return View(model);
             }
         }
     }

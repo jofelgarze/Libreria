@@ -15,9 +15,9 @@ namespace Liberia.WebSite.Services
 
         Task<Autor> CreateAutorAsync(string token, Autor model);
 
-        Task UpdateAutorAsync(Autor model);
+        Task UpdateAutorAsync(string token, Autor model);
 
-        Task DeleteAutorAsync(int id);
+        Task DeleteAutorAsync(string token, int id);
 
     }
 }

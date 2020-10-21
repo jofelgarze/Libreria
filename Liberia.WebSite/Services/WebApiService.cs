@@ -29,6 +29,7 @@ namespace Liberia.WebSite.Services
 
         public async Task<Autor> GetAutorAsync(int id)
         {
+            //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var respuesta = await _httpClient.GetAsync($"/api/Autores/{id}");
             var contenido = await respuesta.Content.ReadAsStringAsync();
 
@@ -37,7 +38,7 @@ namespace Liberia.WebSite.Services
         
         public async Task<Autor> CreateAutorAsync(string token, Autor model)
         {
-             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var body = new StringContent(
                     Newtonsoft.Json.JsonConvert.SerializeObject(model),
                     System.Text.Encoding.UTF8,
@@ -49,8 +50,9 @@ namespace Liberia.WebSite.Services
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Autor>(contenido);
         }
         
-        public async Task UpdateAutorAsync(Autor model)
+        public async Task UpdateAutorAsync(string token, Autor model)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var body = new StringContent(
                     Newtonsoft.Json.JsonConvert.SerializeObject(model),
                     System.Text.Encoding.UTF8,
@@ -60,8 +62,9 @@ namespace Liberia.WebSite.Services
             
         }
        
-        public async Task DeleteAutorAsync(int id)
+        public async Task DeleteAutorAsync(string token, int id)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var respuesta = await _httpClient.DeleteAsync($"/api/Autores/{id}");
         }
 
