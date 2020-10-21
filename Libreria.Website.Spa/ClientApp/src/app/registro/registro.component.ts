@@ -16,8 +16,10 @@ export class RegistroComponent implements OnInit {
     confirmarPassword: new FormControl('')
   });
 
-  constructor(private router: Router, private http: HttpClient, @Inject('BASE_URL_SEGURIDADAPI') baseUrl: string) {
-    this.baseUrl = baseUrl;
+  constructor(private router: Router,
+    private http: HttpClient,
+    @Inject('BASE_URL_SEGURIDADAPI') baseUrl: string) {
+     this.baseUrl = baseUrl;
   }
 
   ngOnInit() {
@@ -35,6 +37,6 @@ export class RegistroComponent implements OnInit {
 
 }
 
-interface JsonToken {
+export interface JsonToken {
   access_token: string
 }

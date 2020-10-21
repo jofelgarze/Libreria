@@ -32,8 +32,11 @@ namespace Libreria.SeguridadApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationContext>(config => {
-                config.UseInMemoryDatabase("Memory");
-            });
+                //Base de datos en memoria
+                //config.UseInMemoryDatabase("Memory");
+                //Base de datos SQL Server
+                config.UseSqlServer(Configuration.GetConnectionString("SeguridadDb"));
+            }, ServiceLifetime.Singleton);
 
             services.AddIdentity<IdentityUser,IdentityRole>(config => {
                 config.Password.RequireDigit = false;
