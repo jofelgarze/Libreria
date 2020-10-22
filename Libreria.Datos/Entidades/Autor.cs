@@ -11,5 +11,6 @@ namespace Libreria.Datos.Entidades
         public DateTime FechaRegistro { get; set; }
         public List<Libro> Libros { get; set; }
         public bool Activo { get; set; }
+        public byte[] FotoPerfil { get; set; }
     }
 }

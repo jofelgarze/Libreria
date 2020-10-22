@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,9 @@ namespace Liberia.WebSite.Models
         public string Nombre { get; set; }
         public DateTime FechaRegistro { get; set; }
         public List<Libro> Libros { get; set; }
+
+        public byte[] FotoPerfil { get; set; }
+        public IFormFile ArchivoFoto { get; set; }
     }
 
     public class Libro {

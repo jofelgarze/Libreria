@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Liberia.WebSite.Models;
@@ -76,6 +77,12 @@ namespace Liberia.WebSite.Controllers
             {
                 try
                 {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await model.ArchivoFoto.CopyToAsync(memoryStream);
+                        model.FotoPerfil = memoryStream.ToArray();
+                    }
+
                     model.FechaRegistro = DateTime.Now;
                     await _apiService.CreateAutorAsync(token, model);
 
@@ -119,11 +126,18 @@ namespace Liberia.WebSite.Controllers
             {
                 try
                 {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await model.ArchivoFoto.CopyToAsync(memoryStream);
+                        model.FotoPerfil = memoryStream.ToArray();
+                    }
+
+
                     await _apiService.UpdateAutorAsync(token, model);
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch
+                catch(Exception ex)
                 {
                     ModelState.AddModelError("Id", "No se pudo guardar el registro.");
                     

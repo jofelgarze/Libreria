@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Libreria.WebApi.Models
         public string Nombre { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "La fecha es obligatoria.")]
         public DateTime? FechaRegistro { get; set; }
-
         public bool Activo { get; set; }
+        public byte[] FotoPerfil { get; set; }
     }
 }

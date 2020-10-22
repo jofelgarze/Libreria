@@ -11,6 +11,7 @@ using Libreria.Negocio.Base;
 using Libreria.WebApi.Models;
 using Libreria.WebApi.Filters;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
 
 namespace Libreria.WebApi.Controllers
 {
@@ -62,8 +63,9 @@ namespace Libreria.WebApi.Controllers
                 {
                     Nombre = modelo.Nombre,
                     FechaRegistro = modelo.FechaRegistro.Value,
-                    Activo =  modelo.Activo
-                }; 
+                    Activo = modelo.Activo,
+                    FotoPerfil = modelo.FotoPerfil
+                };
 
                 await _repository.AddAsync(autor);
 
@@ -90,7 +92,8 @@ namespace Libreria.WebApi.Controllers
                     autor.Nombre = modelo.Nombre;
                     autor.FechaRegistro = modelo.FechaRegistro.Value;
                     autor.Activo = modelo.Activo;
-                    
+                    autor.FotoPerfil = modelo.FotoPerfil;
+
                     await _repository.UpdateAsync(autor);
                     return NoContent();
                 }
